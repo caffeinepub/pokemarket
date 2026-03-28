@@ -11,11 +11,12 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useParams, useRouter } from "@tanstack/react-router";
-import { ImageIcon, Loader2 } from "lucide-react";
+import { ImageIcon, Loader2, Wifi } from "lucide-react";
 import { motion } from "motion/react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { CardCondition, CardRarity, ExternalBlob } from "../backend";
+import { useActor } from "../hooks/useActor";
 import { useInternetIdentity } from "../hooks/useInternetIdentity";
 import {
   useCreateListing,
@@ -32,6 +33,7 @@ export default function CreateEditListingPage({
 }: CreateEditListingPageProps) {
   const router = useRouter();
   const { identity } = useInternetIdentity();
+  const { actor, isFetching: actorFetching } = useActor();
   const editParams = useParams({ strict: false }) as { id?: string };
   const editId = mode === "edit" ? (editParams.id ?? "") : "";
   const { data: existingListing } = useGetListing(editId);
@@ -336,7 +338,7 @@ export default function CreateEditListingPage({
                 </Button>
                 <Button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || actorFetching || !actor}
                   className="flex-1 bg-pokemon-red hover:bg-primary/90 text-primary-foreground"
                   data-ocid="listing_form.submit_button"
                 >
@@ -347,6 +349,11 @@ export default function CreateEditListingPage({
                         ? `Uploading ${uploadProgress}%`
                         : "Saving..."}
                     </>
+                  ) : actorFetching && !actor ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                      Connecting...
+                    </>
                   ) : mode === "create" ? (
                     "List Card"
                   ) : (
@@ -354,6 +361,18 @@ export default function CreateEditListingPage({
                   )}
                 </Button>
               </div>
+
+              {actorFetching && !actor && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="flex items-center gap-2 text-xs text-muted-foreground justify-center pb-1"
+                  data-ocid="listing_form.loading_state"
+                >
+                  <Wifi className="h-3 w-3 animate-pulse" />
+                  Connecting to blockchain — please wait a moment...
+                </motion.div>
+              )}
             </form>
           </CardContent>
         </Card>
