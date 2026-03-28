@@ -82,6 +82,10 @@ export default function CreateEditListingPage({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!actor) {
+      toast.error("Still connecting, please try again in a moment.");
+      return;
+    }
     if (!cardName || !setName || !price) {
       toast.error("Please fill in all required fields");
       return;
@@ -338,7 +342,7 @@ export default function CreateEditListingPage({
                 </Button>
                 <Button
                   type="submit"
-                  disabled={isSubmitting || actorFetching || !actor}
+                  disabled={isSubmitting || actorFetching}
                   className="flex-1 bg-pokemon-red hover:bg-primary/90 text-primary-foreground"
                   data-ocid="listing_form.submit_button"
                 >
@@ -349,7 +353,7 @@ export default function CreateEditListingPage({
                         ? `Uploading ${uploadProgress}%`
                         : "Saving..."}
                     </>
-                  ) : actorFetching && !actor ? (
+                  ) : actorFetching ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin mr-2" />
                       Connecting...
@@ -362,7 +366,7 @@ export default function CreateEditListingPage({
                 </Button>
               </div>
 
-              {actorFetching && !actor && (
+              {actorFetching && (
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}

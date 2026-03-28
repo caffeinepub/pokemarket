@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link, useRouter } from "@tanstack/react-router";
-import { Heart, Menu, X, Zap } from "lucide-react";
+import { Menu, X, Zap } from "lucide-react";
 import { useState } from "react";
 import { useInternetIdentity } from "../hooks/useInternetIdentity";
 import { useGetCallerUserProfile, useIsCallerAdmin } from "../hooks/useQueries";
@@ -43,7 +43,6 @@ export default function Navbar() {
 
   const navLinks = [
     { to: "/", label: "Browse" },
-    { to: "/favorites", label: "Favorites" },
     ...(isAuthenticated
       ? [
           { to: "/my-listings", label: "My Listings" },
@@ -84,14 +83,7 @@ export default function Navbar() {
                 activeProps={{ className: "text-pokemon-yellow bg-muted" }}
                 data-ocid="nav.link"
               >
-                {link.to === "/favorites" ? (
-                  <span className="flex items-center gap-1.5">
-                    <Heart className="h-3.5 w-3.5" />
-                    {link.label}
-                  </span>
-                ) : (
-                  link.label
-                )}
+                {link.label}
               </Link>
             ))}
           </nav>
