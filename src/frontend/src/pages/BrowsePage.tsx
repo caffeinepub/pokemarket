@@ -14,6 +14,7 @@ import { motion } from "motion/react";
 import { useMemo, useState } from "react";
 import { CardCondition, CardRarity } from "../backend";
 import ListingCard from "../components/ListingCard";
+import { useFavorites } from "../hooks/useFavorites";
 import { useGetAllListings } from "../hooks/useQueries";
 
 const RARITY_OPTIONS = [
@@ -53,6 +54,7 @@ const SKELETON_KEYS = [
 
 export default function BrowsePage() {
   const { data: listings = [], isLoading } = useGetAllListings();
+  const { isFavorited, toggleFavorite } = useFavorites();
   const [search, setSearch] = useState("");
   const [setFilter, setSetFilter] = useState("");
   const [rarityFilter, setRarityFilter] = useState("all");
@@ -235,7 +237,13 @@ export default function BrowsePage() {
             data-ocid="browse.list"
           >
             {filtered.map((listing, i) => (
-              <ListingCard key={listing.id} listing={listing} index={i} />
+              <ListingCard
+                key={listing.id}
+                listing={listing}
+                index={i}
+                isFavorited={isFavorited(listing.id)}
+                onToggleFavorite={toggleFavorite}
+              />
             ))}
           </div>
         )}

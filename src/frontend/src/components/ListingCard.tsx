@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "@tanstack/react-router";
+import { Heart } from "lucide-react";
 import { motion } from "motion/react";
 import type { Listing } from "../backend";
 import RarityBadge from "./RarityBadge";
@@ -17,9 +18,16 @@ const CONDITION_LABELS: Record<string, string> = {
 interface ListingCardProps {
   listing: Listing;
   index?: number;
+  isFavorited?: boolean;
+  onToggleFavorite?: (id: string) => void;
 }
 
-export default function ListingCard({ listing, index = 0 }: ListingCardProps) {
+export default function ListingCard({
+  listing,
+  index = 0,
+  isFavorited = false,
+  onToggleFavorite,
+}: ListingCardProps) {
   const priceUsd = (Number(listing.price) / 100).toFixed(2);
   const photoUrl = listing.photoUrl?.getDirectURL?.();
 
@@ -50,6 +58,29 @@ export default function ListingCard({ listing, index = 0 }: ListingCardProps) {
             <div className="absolute top-2 left-2">
               <RarityBadge rarity={listing.rarity} />
             </div>
+            {onToggleFavorite && (
+              <button
+                type="button"
+                className="absolute top-2 right-2 p-1.5 rounded-full bg-black/50 backdrop-blur-sm hover:bg-black/70 transition-all duration-200 hover:scale-110"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onToggleFavorite(listing.id);
+                }}
+                data-ocid="listing.toggle"
+                aria-label={
+                  isFavorited ? "Remove from favorites" : "Add to favorites"
+                }
+              >
+                <Heart
+                  className="h-4 w-4 transition-colors duration-200"
+                  style={{
+                    fill: isFavorited ? "#e3350d" : "transparent",
+                    color: isFavorited ? "#e3350d" : "white",
+                  }}
+                />
+              </button>
+            )}
           </div>
           <CardContent className="p-3">
             <h3 className="font-display font-bold text-foreground truncate">

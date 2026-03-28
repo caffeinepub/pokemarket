@@ -13,6 +13,7 @@ import AdminDashboardPage from "./pages/AdminDashboardPage";
 import BrowsePage from "./pages/BrowsePage";
 import CardDetailPage from "./pages/CardDetailPage";
 import CreateEditListingPage from "./pages/CreateEditListingPage";
+import FavoritesPage from "./pages/FavoritesPage";
 import MyListingsPage from "./pages/MyListingsPage";
 import MyPurchasesPage from "./pages/MyPurchasesPage";
 import PaymentFailurePage from "./pages/PaymentFailurePage";
@@ -109,6 +110,12 @@ const paymentFailureRoute = createRoute({
   component: PaymentFailurePage,
 });
 
+const favoritesRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/favorites",
+  component: FavoritesPage,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   cardDetailRoute,
@@ -120,6 +127,7 @@ const routeTree = rootRoute.addChildren([
   profileRoute,
   paymentSuccessRoute,
   paymentFailureRoute,
+  favoritesRoute,
 ]);
 
 const router = createRouter({ routeTree });
