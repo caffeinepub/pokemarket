@@ -83,6 +83,7 @@ export interface StripeConfiguration {
 }
 export interface UserProfile {
     name: string;
+    email?: string;
 }
 export enum CardCondition {
     damaged = "damaged",
@@ -127,6 +128,7 @@ export interface backendInterface {
     getListing(listingId: ListingId): Promise<Listing>;
     getOrder(orderId: OrderId): Promise<Order>;
     getPlatformBalance(): Promise<bigint>;
+    getSellerEmail(sellerId: Principal): Promise<string | null>;
     getSellerListings(sellerId: Principal): Promise<Array<Listing>>;
     getSellerOrders(sellerId: Principal): Promise<Array<Order>>;
     getStripeSessionStatus(sessionId: string): Promise<StripeSessionStatus>;

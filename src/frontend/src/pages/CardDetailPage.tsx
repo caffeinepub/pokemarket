@@ -19,6 +19,7 @@ import {
   ArrowLeft,
   Edit2,
   Loader2,
+  Mail,
   ShoppingCart,
   Trash2,
 } from "lucide-react";
@@ -31,6 +32,7 @@ import {
   useCreateCheckoutSession,
   useDeleteListing,
   useGetListing,
+  useGetSellerEmail,
   useIsStripeConfigured,
 } from "../hooks/useQueries";
 
@@ -56,6 +58,11 @@ export default function CardDetailPage() {
     identity &&
     listing &&
     listing.sellerId.toString() === identity.getPrincipal().toString();
+
+  const { data: sellerEmail } = useGetSellerEmail(
+    !isOwner && listing ? listing.sellerId : undefined,
+  );
+
   const priceUsd = listing ? (Number(listing.price) / 100).toFixed(2) : "0.00";
   const photoUrl = listing?.photoUrl?.getDirectURL?.();
 
@@ -274,6 +281,16 @@ export default function CardDetailPage() {
                   <p className="text-sm text-center text-muted-foreground">
                     Please log in to purchase
                   </p>
+                )}
+                {sellerEmail && (
+                  <a
+                    href={`mailto:${sellerEmail}`}
+                    className="flex items-center gap-2 w-full justify-center rounded-lg border border-border px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
+                    data-ocid="card_detail.secondary_button"
+                  >
+                    <Mail className="h-4 w-4 shrink-0" />
+                    {sellerEmail}
+                  </a>
                 )}
               </div>
             )}

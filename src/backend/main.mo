@@ -7,6 +7,7 @@ import Runtime "mo:core/Runtime";
 import Principal "mo:core/Principal";
 import Nat "mo:core/Nat";
 import Time "mo:core/Time";
+import Migration "migration";
 import AccessControl "authorization/access-control";
 import Stripe "stripe/stripe";
 import Storage "blob-storage/Storage";
@@ -14,6 +15,7 @@ import MixinAuthorization "authorization/MixinAuthorization";
 import MixinStorage "blob-storage/Mixin";
 import OutCall "http-outcalls/outcall";
 
+(with migration = Migration.run)
 actor {
   // Authorization
   let accessControlState = AccessControl.initState();
@@ -43,6 +45,7 @@ actor {
 
   public type UserProfile = {
     name : Text;
+    email : ?Text;
   };
 
   public type Listing = {
@@ -111,10 +114,7 @@ actor {
   func filterListings(cardName : Text, setName : Text, rarity : CardRarity, condition : CardCondition) : [Listing] {
     listings.values().toArray().filter(
       func(listing) {
-        (cardName == "" or listing.cardName.contains(#text cardName)) and
-        (setName == "" or listing.setName.contains(#text setName)) and
-        ((rarity == #common) or (listing.rarity == rarity)) and
-        ((condition == #mint) or (listing.condition == condition));
+        (cardName == "" or listing.cardName.contains(#text cardName)) and (setName == "" or listing.setName.contains(#text setName)) and ((rarity == #common) or (listing.rarity == rarity)) and ((condition == #mint) or (listing.condition == condition));
       }
     );
   };
@@ -146,6 +146,13 @@ actor {
       Runtime.trap("Unauthorized: Only users can save profiles");
     };
     userProfiles.add(caller, profile);
+  };
+
+  public query func getSellerEmail(sellerId : Principal) : async ?Text {
+    switch (userProfiles.get(sellerId)) {
+      case (?profile) { profile.email };
+      case (null) { null };
+    };
   };
 
   // Stripe Integration

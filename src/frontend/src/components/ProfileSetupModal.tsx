@@ -20,6 +20,7 @@ export default function ProfileSetupModal() {
   const { data: profile, isLoading, isFetched } = useGetCallerUserProfile();
   const { mutateAsync: saveProfile, isPending } = useSaveCallerUserProfile();
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
 
   const showModal = !isLoading && isFetched && profile === null;
 
@@ -27,7 +28,10 @@ export default function ProfileSetupModal() {
     e.preventDefault();
     if (!name.trim()) return;
     try {
-      await saveProfile({ name: name.trim() });
+      await saveProfile({
+        name: name.trim(),
+        email: email.trim() || undefined,
+      });
       toast.success("Welcome to PokéMart!");
     } catch {
       toast.error("Failed to save profile");
@@ -56,6 +60,26 @@ export default function ProfileSetupModal() {
               className="bg-input border-border"
               data-ocid="profile_setup.input"
             />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="setup-email">
+              Contact Email{" "}
+              <span className="text-muted-foreground font-normal">
+                (optional)
+              </span>
+            </Label>
+            <Input
+              id="setup-email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="trainer@example.com"
+              className="bg-input border-border"
+              data-ocid="profile_setup.textarea"
+            />
+            <p className="text-xs text-muted-foreground">
+              Shown to buyers on your listings so they can contact you
+            </p>
           </div>
           <Button
             type="submit"

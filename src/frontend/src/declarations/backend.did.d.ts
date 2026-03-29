@@ -75,7 +75,7 @@ export interface TransformationOutput {
   'body' : Uint8Array,
   'headers' : Array<http_header>,
 }
-export interface UserProfile { 'name' : string }
+export interface UserProfile { 'name' : string, 'email' : [] | [string] }
 export type UserRole = { 'admin' : null } |
   { 'user' : null } |
   { 'guest' : null };
@@ -133,6 +133,7 @@ export interface _SERVICE {
   'getListing' : ActorMethod<[ListingId], Listing>,
   'getOrder' : ActorMethod<[OrderId], Order>,
   'getPlatformBalance' : ActorMethod<[], bigint>,
+  'getSellerEmail' : ActorMethod<[Principal], [] | [string]>,
   'getSellerListings' : ActorMethod<[Principal], Array<Listing>>,
   'getSellerOrders' : ActorMethod<[Principal], Array<Order>>,
   'getStripeSessionStatus' : ActorMethod<[string], StripeSessionStatus>,

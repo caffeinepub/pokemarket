@@ -263,3 +263,15 @@ export function useGetStripeSessionStatus(sessionId: string | null) {
     enabled: !!actor && !isFetching && !!sessionId,
   });
 }
+
+export function useGetSellerEmail(sellerId: Principal | undefined) {
+  const { actor, isFetching } = useActor();
+  return useQuery<string | null>({
+    queryKey: ["sellerEmail", sellerId?.toString()],
+    queryFn: async () => {
+      if (!actor || !sellerId) return null;
+      return actor.getSellerEmail(sellerId);
+    },
+    enabled: !!actor && !isFetching && !!sellerId,
+  });
+}

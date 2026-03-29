@@ -17,10 +17,12 @@ export default function ProfilePage() {
   const { data: profile, isLoading } = useGetCallerUserProfile();
   const saveProfile = useSaveCallerUserProfile();
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
     if (profile?.name) setName(profile.name);
-  }, [profile?.name]);
+    if (profile?.email) setEmail(profile.email);
+  }, [profile?.name, profile?.email]);
 
   if (!identity) {
     return (
@@ -36,7 +38,10 @@ export default function ProfilePage() {
     e.preventDefault();
     if (!name.trim()) return;
     try {
-      await saveProfile.mutateAsync({ name: name.trim() });
+      await saveProfile.mutateAsync({
+        name: name.trim(),
+        email: email.trim() || undefined,
+      });
       toast.success("Profile updated!");
     } catch {
       toast.error("Failed to update profile");
@@ -74,6 +79,27 @@ export default function ProfilePage() {
                   disabled={isLoading}
                   data-ocid="profile.input"
                 />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="email">
+                  Contact Email{" "}
+                  <span className="text-muted-foreground font-normal">
+                    (optional)
+                  </span>
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="trainer@example.com"
+                  className="bg-input border-border"
+                  disabled={isLoading}
+                  data-ocid="profile.textarea"
+                />
+                <p className="text-xs text-muted-foreground">
+                  This email will be shown to buyers on your listings
+                </p>
               </div>
               <div className="space-y-1">
                 <Label className="text-muted-foreground text-xs">

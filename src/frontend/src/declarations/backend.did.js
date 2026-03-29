@@ -78,7 +78,10 @@ export const Order = IDL.Record({
   'stripeSessionId' : IDL.Text,
   'amount' : IDL.Nat,
 });
-export const UserProfile = IDL.Record({ 'name' : IDL.Text });
+export const UserProfile = IDL.Record({
+  'name' : IDL.Text,
+  'email' : IDL.Opt(IDL.Text),
+});
 export const StripeSessionStatus = IDL.Variant({
   'completed' : IDL.Record({
     'userPrincipal' : IDL.Opt(IDL.Text),
@@ -155,6 +158,7 @@ export const idlService = IDL.Service({
   'getListing' : IDL.Func([ListingId], [Listing], ['query']),
   'getOrder' : IDL.Func([OrderId], [Order], ['query']),
   'getPlatformBalance' : IDL.Func([], [IDL.Nat], ['query']),
+  'getSellerEmail' : IDL.Func([IDL.Principal], [IDL.Opt(IDL.Text)], ['query']),
   'getSellerListings' : IDL.Func(
       [IDL.Principal],
       [IDL.Vec(Listing)],
@@ -257,7 +261,10 @@ export const idlFactory = ({ IDL }) => {
     'stripeSessionId' : IDL.Text,
     'amount' : IDL.Nat,
   });
-  const UserProfile = IDL.Record({ 'name' : IDL.Text });
+  const UserProfile = IDL.Record({
+    'name' : IDL.Text,
+    'email' : IDL.Opt(IDL.Text),
+  });
   const StripeSessionStatus = IDL.Variant({
     'completed' : IDL.Record({
       'userPrincipal' : IDL.Opt(IDL.Text),
@@ -331,6 +338,11 @@ export const idlFactory = ({ IDL }) => {
     'getListing' : IDL.Func([ListingId], [Listing], ['query']),
     'getOrder' : IDL.Func([OrderId], [Order], ['query']),
     'getPlatformBalance' : IDL.Func([], [IDL.Nat], ['query']),
+    'getSellerEmail' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Opt(IDL.Text)],
+        ['query'],
+      ),
     'getSellerListings' : IDL.Func(
         [IDL.Principal],
         [IDL.Vec(Listing)],
